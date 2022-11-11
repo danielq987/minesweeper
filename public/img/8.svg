@@ -1,0 +1,12 @@
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="8" clip-path="url(#clip0_1_39)">
+<rect id="Rectangle 2" width="50" height="50" fill="#7B7B7B"/>
+<rect id="Rectangle 1" x="3" y="3" width="47" height="47" fill="#BDBDBD"/>
+<path id="Subtract" fill-rule="evenodd" clip-rule="evenodd" d="M39 41H15V38H12V29H15V23H12V14H15V11H39V14H42.5V23H39V29H42.5V38H39V41ZM21 23V17H33V23H21ZM21 29V35H33V29H21Z" fill="black"/>
+</g>
+<defs>
+<clipPath id="clip0_1_39">
+<rect width="50" height="50" fill="white"/>
+</clipPath>
+</defs>
+</svg>
