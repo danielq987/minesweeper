@@ -32,7 +32,7 @@ const Game = (props: Props) => {
     getInitialState(props.width, props.height)
   );
   const [boardSolution, setBoardSolution] = useState<boolean[][]>(
-    generateBoard(props.width, props.height, 0)
+    generateBoard({ width, height, mines: 0 })
   );
   const [focusedSquare, setFocusedSquare] = useState<FocusedSquare | null>();
   const [firstClick, setFirstClick] = useState<number[] | undefined>();
@@ -51,7 +51,7 @@ const Game = (props: Props) => {
 
   useEffect(() => {
     setBoardState(getInitialState(props.width, props.height));
-    setBoardSolution(generateBoard(props.width, props.height, 0));
+    setBoardSolution(generateBoard({ width, height, mines: 0 }));
     setFirstClick(undefined);
     props.setStatus(GameStatus.Starting);
   }, [props.width, props.height, props.mines]);
