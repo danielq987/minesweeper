@@ -1,0 +1,18 @@
+.game-wrapper {
+  background-color: white;
+}
+
+.game-wrapper .row {
+  margin: none;
+  display: flex;
+}
+
+.game-wrapper .row .square {
+  display: block;
+  width: 25px;
+  -khtml-user-select: none;
+  -o-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

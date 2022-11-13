@@ -28,6 +28,7 @@
       "react-app/jest"
     ]
   },
+  "homepage": "~d3qu/build/",
   "browserslist": {
     "production": [
       ">0.2%",
