@@ -1,0 +1,47 @@
+<svg width="40" height="80" viewBox="0 0 40 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_11_329)">
+<rect width="40" height="80" fill="black"/>
+<g clip-path="url(#clip1_11_329)">
+<path d="M34 4H6V7H9V10H12V13H28V10H31V7H34V4Z" fill="#F71701"/>
+<path d="M3 7L3 39L6 39L6 36L9 36L9 33L12 33L12 13L9 13L9 10L6 10L6 7L3 7Z" fill="#F71701"/>
+<path d="M3 42L3 74L6 74L6 71L9 71L9 68L12 68L12 48L9 48L9 45L6 45L6 42L3 42Z" fill="#F71701"/>
+<path d="M37 7L37 39L34 39L34 36L31 36L31 33L28 33L28 13L31 13L31 10L34 10L34 7L37 7Z" fill="#F71701"/>
+<path d="M37 42L37 74L34 74L34 71L31 71L31 68L28 68L28 48L31 48L31 45L34 45L34 42L37 42Z" fill="#F71701"/>
+<path d="M34 77H6V74H9V71H12V68H28V71H31V74H34V77Z" fill="#F71701"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 7 42)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 7 42)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 10 45)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 10 45)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 10 39)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 10 39)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 13 42)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 13 42)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 16 45)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 16 45)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 16 39)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 16 39)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 19 42)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 19 42)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 22 45)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 22 45)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 22 39)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 22 39)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 28 45)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 28 45)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 28 39)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 28 39)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 31 42)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 31 42)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 25 42)" fill="#7B0600"/>
+<rect width="2" height="2" transform="matrix(1 0 0 -1 25 42)" fill="#7B0600"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_11_329">
+<rect width="40" height="80" fill="white"/>
+</clipPath>
+<clipPath id="clip1_11_329">
+<rect width="34" height="74" fill="white" transform="translate(3 3)"/>
+</clipPath>
+</defs>
+</svg>

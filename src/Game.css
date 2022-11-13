@@ -16,3 +16,18 @@
   -webkit-user-select: none;
   user-select: none;
 }
+
+.game-wrapper .border {
+  display: block;
+  max-height: 25px;
+  max-width: 25px;
+}
+
+.game-wrapper .border.corner-border {
+  max-height: 15px;
+  max-width: 15px;
+}
+
+.game-wrapper .smiley {
+  display: block;
+}

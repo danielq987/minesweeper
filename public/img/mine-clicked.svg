@@ -1,0 +1,15 @@
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="mine-clicked" clip-path="url(#clip0_6_2)">
+<rect id="Rectangle 2" width="50" height="50" fill="#7B7B7B"/>
+<rect id="Rectangle 1" x="3" y="3" width="47" height="47" fill="#FF0004"/>
+<g id="Group 2">
+<path id="Vector 14" d="M25.0645 46V40.1935H19.2581V36.9677H16.0323V40.1935H12.8065V36.9677H16.0323V33.7419H12.8065V27.9355H7V24.0645H12.8065V18.2581H16.0323V14.3871H12.8065V11.1613H16.0323V14.3871H19.2581V11.8065H25.0645V6H28.9355V11.8065H34.7419V14.3871H37.9677V11.1613H41.1935V14.3871H37.9677V18.2581H41.1935V24.0645H47V27.9355H41.1935V33.7419H37.9677V36.9677H41.1935V40.1935H37.9677V36.9677H34.7419V40.1935H28.9355V46H25.0645Z" fill="black"/>
+<path id="Vector 15" d="M19.2581 24.0645V18.2581H25.0645V24.0645H19.2581Z" fill="white"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_6_2">
+<rect width="50" height="50" fill="white"/>
+</clipPath>
+</defs>
+</svg>

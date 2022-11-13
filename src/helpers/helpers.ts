@@ -1,7 +1,7 @@
 import { Difficulty, Settings, SquareState } from "./types";
 
 // lmao fix this shit
-const rootPath = process.env.PUBLIC_URL;
+export const imgPath = (path: string): string => `${process.env.PUBLIC_URL}/img/${path}`;
 
 const pairToString = (xPos: number, yPos: number): string => {
   return `${xPos}_${yPos}`;
@@ -48,17 +48,18 @@ export const getImgString = (
 ): string => {
   switch (state) {
     case SquareState.Empty:
-      return `${rootPath}/img/unpressed.svg`;
+      return imgPath("unpressed.svg");
 
     case SquareState.Flag:
-      return `${rootPath}/img/flag.svg`;
+      return imgPath(`flag.svg`);
 
     case SquareState.Open:
-      if (numNeighbours() < 0) return "/img/mine.svg";
-      return `${rootPath}/img/${numNeighbours()}.svg`;
+			const neighbourMines = numNeighbours();
+      if (neighbourMines < 0) return imgPath(`mine.svg`);
+      return imgPath(`${neighbourMines}.svg`);
 
     case SquareState.Focused:
-      return `${rootPath}/img/0.svg`;
+      return imgPath(`0.svg`);
   }
 };
 
@@ -122,6 +123,7 @@ export const generateBoard = (
   return boardArray;
 };
 
+// Returns the new board state, if [x, y] was replaced with state.
 export const getNewBoardState = (
   state: SquareState,
   x: number,

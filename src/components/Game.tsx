@@ -6,6 +6,7 @@ import {
   getSurroundingMines,
   getNewBoardState,
   makeArray,
+  imgPath,
 } from "../helpers/helpers";
 import Square from "./Square";
 interface FocusedSquare {
@@ -119,9 +120,6 @@ const Game = (props: Props) => {
     }
   };
 
-  // Debug flag
-  const showBoardState = false;
-
   const getSquareState = (x: number, y: number): SquareState => {
     if (y >= boardState.length || x >= boardState[0].length)
       return SquareState.Empty;
@@ -130,13 +128,10 @@ const Game = (props: Props) => {
       return SquareState.Focused;
     }
 
-    return showBoardState
-      ? boardSolution[y][x]
-        ? SquareState.Flag
-        : SquareState.Empty
-      : boardState[y][x];
+    return boardState[y][x];
   };
 
+  // Check to make sure state (board) is updated according to the props.
   const dimensionsMatch = (): boolean => {
     return (
       props.width === boardSolution[0].length &&
@@ -146,25 +141,51 @@ const Game = (props: Props) => {
 
   return (
     <div className="game-wrapper">
-      {dimensionsMatch() &&
-        [...Array(props.height)].map((_: any, y) => {
-          return (
-            <div key={y} className="row">
-              {[...Array(props.width)].map((_: any, x) => (
-                <Square
-                  state={getSquareState(x, y)}
-                  key={x}
-                  getImgString={(state) =>
-                    getImgString(state, () =>
-                      getSurroundingMines(boardSolution, x, y)
-                    )
-                  }
-                  handleMouse={(e) => handleMouse(e, x, y)}
-                />
-              ))}
-            </div>
-          );
-        })}
+      {dimensionsMatch() && (
+        <>
+          <div className="row">
+            <img src={imgPath("ul-border.svg")} className="border corner-border"/>
+            {[...Array(props.width)].map((_: any, index) => {
+              return <img src={imgPath("h-border.svg")} className="border"/>
+            })}
+            <img src={imgPath("ur-border.svg")} className="border corner-border"/>
+          </div>
+          <div className="row">
+            <img src={imgPath("lt-border.svg")} className="border corner-border"/>
+            {[...Array(props.width)].map((_: any, index) => {
+              return <img src={imgPath("h-border.svg")} className="border"/>
+            })}
+            <img src={imgPath("rt-border.svg")} className="border corner-border"/>
+          </div>
+          {[...Array(props.height)].map((_: any, y) => {
+            return (
+              <div key={y} className="row">
+                <img src={imgPath("v-border.svg")} className="border"></img>
+                {[...Array(props.width)].map((_: any, x) => (
+                  <Square
+                    state={getSquareState(x, y)}
+                    key={x}
+                    getImgString={(state) =>
+                      getImgString(state, () =>
+                        getSurroundingMines(boardSolution, x, y)
+                      )
+                    }
+                    handleMouse={(e) => handleMouse(e, x, y)}
+                  />
+                ))}
+                <img src={imgPath("v-border.svg")} className="border"></img>
+              </div>
+            );
+          })}
+          <div className="row">
+            <img src={imgPath("dl-border.svg")} className="border corner-border"/>
+            {[...Array(props.width)].map((_: any, index) => {
+              return <img src={imgPath("h-border.svg")} className="border"/>
+            })}
+            <img src={imgPath("dr-border.svg")} className="border corner-border"/>
+          </div>
+        </>
+      )}
     </div>
   );
 };
