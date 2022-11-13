@@ -1,11 +1,11 @@
 import { MouseEvent, useEffect, useState } from "react";
-import { Difficulty, GameStatus, Settings, SquareState } from "../helpers/types";
+import { GameStatus, SquareState } from "../helpers/types";
 import {
   generateBoard,
   getImgString,
   getSurroundingMines,
   getNewBoardState,
-  getSettingsFromDifficulty,
+  makeArray,
 } from "../helpers/helpers";
 import Square from "./Square";
 interface FocusedSquare {
@@ -23,14 +23,14 @@ interface Props {
 }
 
 const Game = (props: Props) => {
-
+  const { height, width, mines } = props;
   const getInitialState = (width: number, height: number) => {
-    return Array.from(Array(height), () =>
-      new Array(width).fill(SquareState.Empty)
-    );
+    return makeArray(width, height, SquareState.Empty);
   };
 
-  const [boardState, setBoardState] = useState<SquareState[][]>(getInitialState(props.width, props.height));
+  const [boardState, setBoardState] = useState<SquareState[][]>(
+    getInitialState(props.width, props.height)
+  );
   const [boardSolution, setBoardSolution] = useState<boolean[][]>(
     generateBoard(props.width, props.height, 0)
   );
@@ -40,13 +40,7 @@ const Game = (props: Props) => {
   useEffect(() => {
     const x = firstClick && firstClick[0];
     const y = firstClick && firstClick[1];
-    const solution = generateBoard(
-      props.width,
-      props.height,
-      props.mines,
-      x,
-      y
-    );
+    const solution = generateBoard({ height, width, mines }, x, y);
     setBoardSolution(solution);
     if (x && y) {
       setBoardState(
@@ -61,7 +55,6 @@ const Game = (props: Props) => {
     setFirstClick(undefined);
     props.setStatus(GameStatus.Starting);
   }, [props.width, props.height, props.mines]);
-
 
   const setSquareTo = (state: SquareState, x: number, y: number) => {
     setBoardState(getNewBoardState(state, x, y, boardState, boardSolution));
@@ -94,7 +87,8 @@ const Game = (props: Props) => {
           } else {
             setSquareTo(SquareState.Open, x, y);
             // Lost
-            if (getSurroundingMines(boardSolution, x, y) === -1) props.setStatus(GameStatus.Lost);
+            if (getSurroundingMines(boardSolution, x, y) === -1)
+              props.setStatus(GameStatus.Lost);
           }
         }
         setFocusedSquare(null);
@@ -129,7 +123,8 @@ const Game = (props: Props) => {
   const showBoardState = false;
 
   const getSquareState = (x: number, y: number): SquareState => {
-    if (y >= boardState.length || x >= boardState[0].length) return SquareState.Empty;
+    if (y >= boardState.length || x >= boardState[0].length)
+      return SquareState.Empty;
 
     if (focusedSquare && focusedSquare.x === x && focusedSquare.y === y) {
       return SquareState.Focused;
@@ -142,28 +137,34 @@ const Game = (props: Props) => {
       : boardState[y][x];
   };
 
-  const dimensionsMatch = ():boolean => {
-    return props.width === boardSolution[0].length && props.height === boardSolution.length
-  }
+  const dimensionsMatch = (): boolean => {
+    return (
+      props.width === boardSolution[0].length &&
+      props.height === boardSolution.length
+    );
+  };
 
   return (
     <div className="game-wrapper">
-      {dimensionsMatch() && [...Array(props.height)].map((_: any, y) => {
-        return (
-          <div key={y} className="row">
-            {[...Array(props.width)].map((_: any, x) => (
-              <Square
-                state={getSquareState(x, y)}
-                key={x}
-                getImgString={(state) =>
-                  getImgString(state, () => getSurroundingMines(boardSolution, x, y))
-                }
-                handleMouse={(e) => handleMouse(e, x, y)}
-              />
-            ))}
-          </div>
-        );
-      })}
+      {dimensionsMatch() &&
+        [...Array(props.height)].map((_: any, y) => {
+          return (
+            <div key={y} className="row">
+              {[...Array(props.width)].map((_: any, x) => (
+                <Square
+                  state={getSquareState(x, y)}
+                  key={x}
+                  getImgString={(state) =>
+                    getImgString(state, () =>
+                      getSurroundingMines(boardSolution, x, y)
+                    )
+                  }
+                  handleMouse={(e) => handleMouse(e, x, y)}
+                />
+              ))}
+            </div>
+          );
+        })}
     </div>
   );
 };
