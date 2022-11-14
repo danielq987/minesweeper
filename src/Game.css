@@ -3,8 +3,22 @@
 }
 
 .game-wrapper .row {
-  margin: none;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.game-wrapper .row.header {
+  background-color: #BDBDBD;
+}
+
+.game-wrapper .row.header .row.digits {
+  margin: 0px 8px;
+}
+
+.game-wrapper .column {
+  display: flex;
+  flex-direction: column;
 }
 
 .game-wrapper .row .square {
@@ -28,6 +42,10 @@
   max-width: 15px;
 }
 
-.game-wrapper .smiley {
-  display: block;
+.smiley {
+  max-width: 50px;
+}
+
+.digit {
+  max-height: 60px;
 }

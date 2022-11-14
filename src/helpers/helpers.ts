@@ -1,13 +1,14 @@
 import { Difficulty, Settings, SquareState } from "./types";
 
 // lmao fix this shit
-export const imgPath = (path: string): string => `${process.env.PUBLIC_URL}/img/${path}`;
+export const imgPath = (path: string): string =>
+  `${process.env.PUBLIC_URL}/img/${path}`;
 
 const pairToString = (xPos: number, yPos: number): string => {
   return `${xPos}_${yPos}`;
 };
 
-const getNeighbours = (
+export const getNeighbours = (
   xPos: number,
   yPos: number,
   xMax: number,
@@ -42,6 +43,22 @@ export const getSurroundingMines = (
   return num_neighbours;
 };
 
+export const getSurroundingFlags = (
+  boardState: SquareState[][],
+  xPos: number,
+  yPos: number
+): number => {
+  let num_flags = 0;
+  const xMax = boardState[0].length;
+  const yMax = boardState.length;
+  for (let neighbour of getNeighbours(xPos, yPos, xMax, yMax)) {
+    const x = neighbour[0];
+    const y = neighbour[1];
+    if (boardState[y][x] === SquareState.Flag) num_flags++;
+  }
+  return num_flags;
+};
+
 export const getImgString = (
   state: SquareState,
   numNeighbours: () => number
@@ -54,7 +71,7 @@ export const getImgString = (
       return imgPath(`flag.svg`);
 
     case SquareState.Open:
-			const neighbourMines = numNeighbours();
+      const neighbourMines = numNeighbours();
       if (neighbourMines < 0) return imgPath(`mine.svg`);
       return imgPath(`${neighbourMines}.svg`);
 
@@ -126,21 +143,20 @@ export const generateBoard = (
 // Returns the new board state, if [x, y] was replaced with state.
 export const getNewBoardState = (
   state: SquareState,
-  x: number,
-  y: number,
+  positions: number[][],
   currentState: SquareState[][],
   boardSolution: boolean[][]
 ) => {
   const visited = new Set();
   const xMax = currentState[0].length;
   const yMax = currentState.length;
-  console.log(boardSolution);
 
   // Recursively open up squares
   const openSquare = (xPos: number, yPos: number) => {
+    const str = pairToString(xPos, yPos);
+    if (visited.has(str)) return;
     stateClone[yPos][xPos] = SquareState.Open;
-    visited.add(pairToString(xPos, yPos));
-    console.log(getSurroundingMines(boardSolution, xPos, yPos));
+    visited.add(str);
     if (getSurroundingMines(boardSolution, xPos, yPos) === 0) {
       for (let neighbour of getNeighbours(xPos, yPos, xMax, yMax)) {
         const x = neighbour[0];
@@ -153,10 +169,14 @@ export const getNewBoardState = (
   };
 
   let stateClone = currentState.map((row) => row.slice());
-  if (state === SquareState.Open) {
-    openSquare(x, y);
-  } else {
-    stateClone[y][x] = state;
+
+  for (let [xPos, yPos] of positions) {
+    if (state === SquareState.Open) {
+      if (currentState[yPos][xPos] === SquareState.Empty)
+        openSquare(xPos, yPos);
+    } else {
+      stateClone[yPos][xPos] = state;
+    }
   }
 
   return stateClone;
