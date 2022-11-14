@@ -29,6 +29,10 @@ const Game = (props: Props) => {
   );
 
   useEffect(() => {
+    setGameStatus(GameStatus.Starting);
+  }, [props.width, props.height, props.mines])
+
+  useEffect(() => {
     let timer: NodeJS.Timer;
     const stopTimer = () => {
       clearInterval(timer);
@@ -72,7 +76,7 @@ const Game = (props: Props) => {
         <div className="row header">
           <div className="row">
             <div className="border-column">
-              <BorderElement repeat={3} path={imgPath("v-border.svg")} />
+              <BorderElement repeat={2} path={imgPath("v-border.svg")} />
             </div>
             <DigitDisplay num={remainingMines} />
           </div>
@@ -85,7 +89,7 @@ const Game = (props: Props) => {
           <div className="row">
             <DigitDisplay num={time} />
             <div className="border-column">
-              <BorderElement repeat={3} path={imgPath("v-border.svg")} />
+              <BorderElement repeat={2} path={imgPath("v-border.svg")} />
             </div>
           </div>
         </div>
