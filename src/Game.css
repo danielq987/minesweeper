@@ -24,11 +24,14 @@
 .game-wrapper .row .square {
   display: block;
   width: 25px;
+}
+
+.game-wrapper img {
+  user-select: none;
   -khtml-user-select: none;
   -o-user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
-  user-select: none;
 }
 
 .game-wrapper .border {

@@ -2,7 +2,9 @@ export enum SquareState {
 	Empty,
 	Flag,
 	Focused,
-	Open
+	Open,
+	Mine,
+	FlagIncorrect,
 };
 
 export enum Difficulty {
@@ -13,6 +15,7 @@ export enum Difficulty {
 
 export enum GameStatus {
 	Playing,
+	Pressing,
 	Lost,
 	Won,
 	Starting

@@ -75,8 +75,14 @@ export const getImgString = (
       if (neighbourMines < 0) return imgPath(`mine.svg`);
       return imgPath(`${neighbourMines}.svg`);
 
+    case SquareState.Mine:
+      return imgPath("mine-clicked.svg");
+
     case SquareState.Focused:
       return imgPath(`0.svg`);
+
+    case SquareState.FlagIncorrect:
+      return imgPath(`mine-incorrect.svg`);
   }
 };
 
@@ -173,7 +179,11 @@ export const getNewBoardState = (
   for (let [xPos, yPos] of positions) {
     if (state === SquareState.Open) {
       if (currentState[yPos][xPos] === SquareState.Empty)
-        openSquare(xPos, yPos);
+        if (boardSolution[yPos][xPos]) {
+          stateClone[yPos][xPos] = SquareState.Mine;
+        } else {
+          openSquare(xPos, yPos);
+        }
     } else {
       stateClone[yPos][xPos] = state;
     }

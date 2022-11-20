@@ -30,6 +30,7 @@ const Game = (props: Props) => {
 
   useEffect(() => {
     setGameStatus(GameStatus.Starting);
+    setRemainingMines(props.mines);
   }, [props.width, props.height, props.mines])
 
   useEffect(() => {
@@ -56,9 +57,11 @@ const Game = (props: Props) => {
 
       case GameStatus.Starting:
         resetTimer();
+        setRemainingMines(props.mines)
         break;
 
       case GameStatus.Playing:
+      case GameStatus.Pressing:
         startTimer();
         break;
     }
@@ -81,10 +84,8 @@ const Game = (props: Props) => {
             <DigitDisplay num={remainingMines} />
           </div>
           <Smiley
-            restartGame={() => {
-              setGameStatus(GameStatus.Starting);
-            }}
             status={gameStatus}
+            setStatus={setGameStatus}
           />
           <div className="row">
             <DigitDisplay num={time} />

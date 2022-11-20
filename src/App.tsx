@@ -49,17 +49,7 @@ function App() {
               defaultChecked
             />
           </div>
-          {/* <div>
-            Width: <input value={width} onChange={(e) => {setWidth(parseInt(e.target.value))}}/>
-          </div>
-          <div>
-            Height: <input value={height} onChange={(e) => setHeight(parseInt(e.target.value))}/>
-          </div>
-          <div>
-            Mines: <input value={mines} onChange={(e) => setWidth(parseInt(e.target.value))}/>
-          </div> */}
         </div>
-        There is no check for game win yet. so nothing will happen when you win :(
       </header>
     </div>
   );
