@@ -3,7 +3,7 @@ import "./Game.css";
 import { SyntheticEvent, useState } from "react";
 import { Difficulty } from "./helpers/types";
 import { getSettingsFromDifficulty } from "./helpers/helpers";
-import GameBorder from "./components/Game";
+import Game from "./components/Game";
 
 function App() {
   const [width, setWidth] = useState<number>(30);
@@ -22,11 +22,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <GameBorder
-          width={width}
-          height={height}
-          mines={mines}
-        />
+        <Game width={width} height={height} mines={mines} />
         <div
           onChange={(e) => {
             onChange(e);
