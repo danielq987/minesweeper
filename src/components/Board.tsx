@@ -39,6 +39,9 @@ const Game = (props: Props) => {
     generateBoard({ width, height, mines: 0 })
   );
   const [focusedSquare, setFocusedSquare] = useState<FocusedSquare | null>();
+
+  // 0 for no lock, 1 for lock
+  const [middleLock, setMiddleLock] = useState<number>(0);
   const [firstClick, setFirstClick] = useState<number[] | undefined>();
 
   // Get list of mines
@@ -52,7 +55,7 @@ const Game = (props: Props) => {
       }
     }
     return s;
-  }, [boardSolution])
+  }, [boardSolution]);
 
   // Returns true if game end
   const checkGameWin = (updatedBoard: SquareState[][]) => {
@@ -100,7 +103,9 @@ const Game = (props: Props) => {
     if (state === SquareState.Open) {
       if (checkGameWin(newBoard)) {
         props.setStatus(GameStatus.Won);
-        setBoardState(getNewBoardState(SquareState.Flag, mineSet, newBoard, boardSolution));
+        setBoardState(
+          getNewBoardState(SquareState.Flag, mineSet, newBoard, boardSolution)
+        );
       } else {
         props.setStatus(GameStatus.Playing);
       }
@@ -123,12 +128,26 @@ const Game = (props: Props) => {
     y: number
   ) => {
     event.preventDefault();
+
     const squareState = boardState[y][x];
     if (props.status === GameStatus.Lost || props.status === GameStatus.Won)
       return;
+    const isDoubleClick =
+      (event.button === 2 && event.buttons === 1) ||
+      (event.button === 0 && event.buttons === 2) ||
+      (event.button === 2 && event.buttons === 3) ||
+      (event.button === 0 && event.buttons === 3);
+
+    // right button up event while left button is down
+    const isRightMouseUpLeftDown = event.button === 2 && event.buttons === 1;
+
+    console.log(event.type, event.button, event.buttons);
+    if (middleLock && isDoubleClick) return;
 
     switch (event.type) {
+      // Right click
       case "contextmenu":
+        if (isDoubleClick) return;
         if (squareState === SquareState.Empty && props.remainingMines > 0) {
           setSquaresTo(SquareState.Flag, [[x, y]]);
           props.setRemainingMines(props.remainingMines - 1);
@@ -139,10 +158,19 @@ const Game = (props: Props) => {
         break;
 
       case "mouseup":
-        const isDoubleClick =
-          (event.button === 2 && event.buttons === 1) ||
-          (event.button === 0 && event.buttons === 2);
-        let status = GameStatus.Playing;
+        if (middleLock) return;
+        if (isDoubleClick && squareState !== SquareState.Open) {
+          if (isRightMouseUpLeftDown) {
+            setFocusedSquare(null);
+            props.setStatus(GameStatus.Playing);
+            setMiddleLock(1)
+          };
+          setFocusedSquare(null);
+          return;
+        }
+
+        if (event.button === 0) setMiddleLock(0);
+
         if (squareState === SquareState.Empty && event.button === 0) {
           if (!firstClick) {
             // Game has not started yet
@@ -151,7 +179,7 @@ const Game = (props: Props) => {
           } else {
             setSquaresTo(SquareState.Open, [[x, y]]);
           }
-        } else if (squareState === SquareState.Open && isDoubleClick) {
+        } else if (isDoubleClick) {
           const surroundingFlags = getSurroundingFlags(boardState, x, y);
           const surroundingMines = getSurroundingMines(boardSolution, x, y);
 
@@ -166,22 +194,26 @@ const Game = (props: Props) => {
         break;
 
       case "mousedown":
-        if (squareState === SquareState.Empty && event.button === 0) {
-          props.setStatus(GameStatus.Pressing);
-          setFocusedSquare({
-            x,
-            y,
-            isSurround: false,
-          });
+        if (event.button === 0) setMiddleLock(0);
+        if (squareState === SquareState.Empty) {
+          if (event.button === 0 || (event.button === 2 && isDoubleClick)) {
+            props.setStatus(GameStatus.Pressing);
+            setFocusedSquare({
+              x,
+              y,
+              isSurround: isDoubleClick,
+            });
+          }
         }
         break;
 
       case "mouseover":
-        if (squareState === SquareState.Empty && event.buttons === 1) {
+        if (middleLock) return;
+        if (event.buttons === 1 || event.buttons === 3) {
           setFocusedSquare({
             x,
             y,
-            isSurround: false,
+            isSurround: event.buttons === 3,
           });
         }
         break;
@@ -195,8 +227,17 @@ const Game = (props: Props) => {
     if (y >= boardState.length || x >= boardState[0].length)
       return SquareState.Empty;
 
-    if (focusedSquare && focusedSquare.x === x && focusedSquare.y === y) {
-      return SquareState.Focused;
+    if (focusedSquare && boardState[y][x] === SquareState.Empty) {
+      const { isSurround, x: xFocus, y: yFocus } = focusedSquare;
+      if (
+        isSurround &&
+        Math.abs(xFocus - x) <= 1 &&
+        Math.abs(yFocus - y) <= 1
+      ) {
+        return SquareState.Focused;
+      } else if (focusedSquare.x === x && focusedSquare.y === y) {
+        return SquareState.Focused;
+      }
     }
 
     if (props.status === GameStatus.Lost) {
