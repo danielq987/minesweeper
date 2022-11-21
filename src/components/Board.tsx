@@ -70,6 +70,7 @@ const Game = (props: Props) => {
     return true;
   };
 
+  // First click handler - generates no-guess board
   useEffect(() => {
     const x = firstClick && firstClick[0];
     const y = firstClick && firstClick[1];
@@ -82,6 +83,7 @@ const Game = (props: Props) => {
     }
   }, [firstClick]);
 
+  // Game reset handler (from difficulty change or smiley)
   useEffect(() => {
     if (props.status === GameStatus.Starting) {
       setBoardState(getInitialState(width, height));
@@ -89,9 +91,9 @@ const Game = (props: Props) => {
       setFirstClick(undefined);
       props.setStatus(GameStatus.Starting);
     }
-  }, [width, height, mines, props]);
+  }, [width, height, mines, props, props.status]);
 
-  // Returns false if user opens a bomb
+  // Returns false if user opens a mine
   const setSquaresTo = (state: SquareState, positions: number[][]): boolean => {
     const newBoard = getNewBoardState(
       state,
@@ -141,8 +143,10 @@ const Game = (props: Props) => {
     // right button up event while left button is down
     const isRightMouseUpLeftDown = event.button === 2 && event.buttons === 1;
 
-    console.log(event.type, event.button, event.buttons);
-    if (middleLock && isDoubleClick) return;
+    console.log(middleLock, event.type, event.button, event.buttons);
+
+    // After right button is up, do not do anything until left is up
+    if (middleLock && isDoubleClick && event.button === 2) return;
 
     switch (event.type) {
       // Right click
@@ -158,28 +162,26 @@ const Game = (props: Props) => {
         break;
 
       case "mouseup":
-        if (middleLock) return;
-        if (isDoubleClick && squareState !== SquareState.Open) {
-          if (isRightMouseUpLeftDown) {
-            setFocusedSquare(null);
-            props.setStatus(GameStatus.Playing);
-            setMiddleLock(1)
-          };
-          setFocusedSquare(null);
+        if (middleLock && event.button === 0) {
+          setMiddleLock(0);
           return;
         }
+        // if (isDoubleClick && squareState !== SquareState.Open) {
+        //   if (isRightMouseUpLeftDown) {
+        //     setFocusedSquare(null);
+        //     props.setStatus(GameStatus.Playing);
+        //     setMiddleLock(1);
+        //   }
+        //   setFocusedSquare(null);
+        //   return;
+        // }
 
-        if (event.button === 0) setMiddleLock(0);
-
-        if (squareState === SquareState.Empty && event.button === 0) {
-          if (!firstClick) {
-            // Game has not started yet
-            setFirstClick([x, y]);
+        if (isDoubleClick) {
+          if (isRightMouseUpLeftDown) {
             props.setStatus(GameStatus.Playing);
-          } else {
-            setSquaresTo(SquareState.Open, [[x, y]]);
+            setMiddleLock(1);
           }
-        } else if (isDoubleClick) {
+
           const surroundingFlags = getSurroundingFlags(boardState, x, y);
           const surroundingMines = getSurroundingMines(boardSolution, x, y);
 
@@ -189,21 +191,28 @@ const Game = (props: Props) => {
               getNeighbours(x, y, cWidth, cHeight)
             );
           }
+        } else if (squareState === SquareState.Empty && event.button === 0) {
+          if (!firstClick) {
+            // Game has not started yet
+            setFirstClick([x, y]);
+            props.setStatus(GameStatus.Playing);
+          } else {
+            setSquaresTo(SquareState.Open, [[x, y]]);
+          }
         }
+
         setFocusedSquare(null);
         break;
 
       case "mousedown":
         if (event.button === 0) setMiddleLock(0);
-        if (squareState === SquareState.Empty) {
-          if (event.button === 0 || (event.button === 2 && isDoubleClick)) {
-            props.setStatus(GameStatus.Pressing);
-            setFocusedSquare({
-              x,
-              y,
-              isSurround: isDoubleClick,
-            });
-          }
+        if (event.button === 0 || (event.button === 2 && isDoubleClick)) {
+          props.setStatus(GameStatus.Pressing);
+          setFocusedSquare({
+            x,
+            y,
+            isSurround: isDoubleClick,
+          });
         }
         break;
 
