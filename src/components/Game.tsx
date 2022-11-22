@@ -28,6 +28,7 @@ const Game = (props: Props) => {
   }, [props.width, props.height, props.mines]);
 
   useEffect(() => {
+    console.log("using effect ");
     let timer: NodeJS.Timer;
     const stopTimer = () => {
       clearInterval(timer);
@@ -39,7 +40,7 @@ const Game = (props: Props) => {
 
     const startTimer = () => {
       timer = setInterval(() => {
-        setTime(time + 1);
+        setTime(time => time + 1);
       }, 1000);
     };
 
@@ -55,7 +56,6 @@ const Game = (props: Props) => {
         break;
 
       case GameStatus.Playing:
-      case GameStatus.Pressing:
         startTimer();
         break;
     }

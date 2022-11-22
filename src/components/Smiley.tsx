@@ -35,9 +35,6 @@ const Smiley = (props: Props) => {
 			src = "sunglasses.svg"
 			break;
 
-		case GameStatus.Pressing:
-			src = "surprised.svg"
-			break;
 	}
 
 	return <img alt="Smiley!" src={imgPath(pressed ? "happy-pressed.svg" : src)} className="smiley" onClick={handleClick} onMouseDown={handleMouseDown}/>

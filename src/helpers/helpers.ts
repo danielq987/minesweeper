@@ -4,9 +4,14 @@ import { Difficulty, Settings, SquareState } from "./types";
 export const imgPath = (path: string): string =>
   `${process.env.PUBLIC_URL}/img/${path}`;
 
+export const isNeighbour = (x1: number, y1: number, x2: number, y2: number): boolean => {
+  return Math.abs(x1 - x2) <= 1 && Math.abs(y1 - y2) <= 1
+}
+
 const pairToString = (xPos: number, yPos: number): string => {
   return `${xPos}_${yPos}`;
 };
+
 
 export const getNeighbours = (
   xPos: number,
@@ -24,66 +29,46 @@ export const getNeighbours = (
   return neighbours;
 };
 
-export const getSurroundingMines = (
-  boardSolution: boolean[][],
+export const getSurroundingCount = <Type>(
+  board: Type[][],
   xPos: number,
-  yPos: number
+  yPos: number,
+  value: Type
 ): number => {
-  // This is a mine
-  if (boardSolution[yPos][xPos]) return -1;
-
   let num_neighbours = 0;
-  const xMax = boardSolution[0].length;
-  const yMax = boardSolution.length;
+  const xMax = board[0].length;
+  const yMax = board.length;
   for (let neighbour of getNeighbours(xPos, yPos, xMax, yMax)) {
     const x = neighbour[0];
     const y = neighbour[1];
-    if (boardSolution[y][x]) num_neighbours++;
+    if (board[y][x] === value) num_neighbours++;
   }
   return num_neighbours;
 };
 
-export const getSurroundingFlags = (
-  boardState: SquareState[][],
-  xPos: number,
-  yPos: number
-): number => {
-  let num_flags = 0;
-  const xMax = boardState[0].length;
-  const yMax = boardState.length;
-  for (let neighbour of getNeighbours(xPos, yPos, xMax, yMax)) {
-    const x = neighbour[0];
-    const y = neighbour[1];
-    if (boardState[y][x] === SquareState.Flag) num_flags++;
-  }
-  return num_flags;
+
+type ImgMap = {
+  [key in SquareState]: string;
+};
+
+const imgs: ImgMap = {
+  [SquareState.Empty]: "unpressed.svg",
+  [SquareState.Flag]: "flag.svg",
+  [SquareState.Open]: "mine.svg",
+  [SquareState.Mine]: "mine-clicked.svg",
+  [SquareState.Focused]: "0.svg",
+  [SquareState.FlagIncorrect]: "mine-incorrect.svg",
 };
 
 export const getImgString = (
   state: SquareState,
-  numNeighbours: () => number
+  numNeighbours: () => number,
+  isMine: () => boolean,
 ): string => {
-  switch (state) {
-    case SquareState.Empty:
-      return imgPath("unpressed.svg");
+  if (!isMine() && state === SquareState.Open)
+    return imgPath(`${numNeighbours()}.svg`);
 
-    case SquareState.Flag:
-      return imgPath(`flag.svg`);
-
-    case SquareState.Open:
-      const neighbourMines = numNeighbours();
-      if (neighbourMines < 0) return imgPath(`mine.svg`);
-      return imgPath(`${neighbourMines}.svg`);
-
-    case SquareState.Mine:
-      return imgPath("mine-clicked.svg");
-
-    case SquareState.Focused:
-      return imgPath(`0.svg`);
-
-    case SquareState.FlagIncorrect:
-      return imgPath(`mine-incorrect.svg`);
-  }
+  return imgPath(imgs[state]);
 };
 
 // Fisher yates shuffle
@@ -107,7 +92,8 @@ function shuffle(array: number[]): number[] {
   return array;
 }
 
-export const makeArray = (xDim: number, yDim: number, value: any) => {
+// Fill a 2d array with value and return
+export const makeArray = <Type>(xDim: number, yDim: number, value: Type):Type[][]  => {
   return Array.from(Array(yDim), () => new Array(xDim).fill(value));
 };
 
@@ -122,7 +108,6 @@ export const generateBoard = (
   }
 
   let boardArray = makeArray(width, height, false);
-
   if (mines === 0) return boardArray;
 
   const mineArray = shuffle(
@@ -137,8 +122,7 @@ export const generateBoard = (
     const x = mineArray[mineIndex] % width;
 
     mineIndex++;
-    // Janky way to make sure the squares around the click location are not mines
-    if (Math.abs(xClick - x) <= 1 && Math.abs(yClick - y) <= 1) continue;
+    if (isNeighbour(x, y, xClick, yClick)) continue;
 
     boardArray[y][x] = true;
     minesSet++;
@@ -163,7 +147,7 @@ export const getNewBoardState = (
     if (visited.has(str)) return;
     stateClone[yPos][xPos] = SquareState.Open;
     visited.add(str);
-    if (getSurroundingMines(boardSolution, xPos, yPos) === 0) {
+    if (getSurroundingCount(boardSolution, xPos, yPos, true) === 0) {
       for (let neighbour of getNeighbours(xPos, yPos, xMax, yMax)) {
         const x = neighbour[0];
         const y = neighbour[1];

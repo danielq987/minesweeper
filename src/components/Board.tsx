@@ -3,10 +3,9 @@ import { GameStatus, SquareState } from "../helpers/types";
 import {
   generateBoard,
   getImgString,
-  getSurroundingMines,
+  getSurroundingCount,
   getNewBoardState,
   makeArray,
-  getSurroundingFlags,
   getNeighbours,
 } from "../helpers/helpers";
 import Square from "./Square";
@@ -41,7 +40,7 @@ const Game = (props: Props) => {
   const [focusedSquare, setFocusedSquare] = useState<FocusedSquare | null>();
 
   // 0 for no lock, 1 for lock
-  const [middleLock, setMiddleLock] = useState<number>(0);
+  const [doubleClickLock, setDoubleClickLock] = useState<number>(0);
   const [firstClick, setFirstClick] = useState<number[] | undefined>();
 
   // Get list of mines
@@ -124,29 +123,34 @@ const Game = (props: Props) => {
     return true;
   };
 
+  // This function is hot garbage. fix it
   const handleMouse = (
     event: MouseEvent<HTMLImageElement>,
     x: number,
     y: number
   ) => {
+    const verifyButtons = (button = -1, buttons = -1): boolean => {
+      return (
+        (button === -1 ? true : event.button === button) &&
+        (buttons === -1 ? true : event.buttons === buttons)
+      );
+    };
     event.preventDefault();
 
-    const squareState = boardState[y][x];
     if (props.status === GameStatus.Lost || props.status === GameStatus.Won)
       return;
+
+    const squareState = boardState[y][x];
     const isDoubleClick =
       (event.button === 2 && event.buttons === 1) ||
       (event.button === 0 && event.buttons === 2) ||
       (event.button === 2 && event.buttons === 3) ||
       (event.button === 0 && event.buttons === 3);
 
-    // right button up event while left button is down
-    const isRightMouseUpLeftDown = event.button === 2 && event.buttons === 1;
-
-    console.log(middleLock, event.type, event.button, event.buttons);
+    console.log(doubleClickLock, event.type, event.button, event.buttons);
 
     // After right button is up, do not do anything until left is up
-    if (middleLock && isDoubleClick && event.button === 2) return;
+    if (doubleClickLock && isDoubleClick && event.button === 2) return;
 
     switch (event.type) {
       // Right click
@@ -162,34 +166,36 @@ const Game = (props: Props) => {
         break;
 
       case "mouseup":
-        if (middleLock && event.button === 0) {
-          setMiddleLock(0);
+        if (doubleClickLock && event.button === 0) {
+          setDoubleClickLock(0);
           return;
         }
-        // if (isDoubleClick && squareState !== SquareState.Open) {
-        //   if (isRightMouseUpLeftDown) {
-        //     setFocusedSquare(null);
-        //     props.setStatus(GameStatus.Playing);
-        //     setMiddleLock(1);
-        //   }
-        //   setFocusedSquare(null);
-        //   return;
-        // }
 
         if (isDoubleClick) {
-          if (isRightMouseUpLeftDown) {
+          // Right click lift
+          if (squareState !== SquareState.Open && verifyButtons(2, 1)) {
             props.setStatus(GameStatus.Playing);
-            setMiddleLock(1);
-          }
-
-          const surroundingFlags = getSurroundingFlags(boardState, x, y);
-          const surroundingMines = getSurroundingMines(boardSolution, x, y);
-
-          if (surroundingMines > 0 && surroundingFlags === surroundingMines) {
-            setSquaresTo(
-              SquareState.Open,
-              getNeighbours(x, y, cWidth, cHeight)
+            setDoubleClickLock(1);
+          } else if (squareState === SquareState.Open) {
+            const surroundingFlags = getSurroundingCount(
+              boardState,
+              x,
+              y,
+              SquareState.Flag
             );
+            const surroundingMines = getSurroundingCount(
+              boardSolution,
+              x,
+              y,
+              true
+            );
+
+            if (surroundingMines > 0 && surroundingFlags === surroundingMines) {
+              setSquaresTo(
+                SquareState.Open,
+                getNeighbours(x, y, cWidth, cHeight)
+              );
+            }
           }
         } else if (squareState === SquareState.Empty && event.button === 0) {
           if (!firstClick) {
@@ -205,9 +211,8 @@ const Game = (props: Props) => {
         break;
 
       case "mousedown":
-        if (event.button === 0) setMiddleLock(0);
+        if (event.button === 0) setDoubleClickLock(0);
         if (event.button === 0 || (event.button === 2 && isDoubleClick)) {
-          props.setStatus(GameStatus.Pressing);
           setFocusedSquare({
             x,
             y,
@@ -217,7 +222,7 @@ const Game = (props: Props) => {
         break;
 
       case "mouseover":
-        if (middleLock) return;
+        if (doubleClickLock) return;
         if (event.buttons === 1 || event.buttons === 3) {
           setFocusedSquare({
             x,
@@ -277,8 +282,10 @@ const Game = (props: Props) => {
                   state={getSquareState(x, y)}
                   key={x}
                   getImgString={(state) =>
-                    getImgString(state, () =>
-                      getSurroundingMines(boardSolution, x, y)
+                    getImgString(
+                      state,
+                      () => getSurroundingCount(boardSolution, x, y, true),
+                      () => boardSolution[y][x]
                     )
                   }
                   handleMouse={(e) => handleMouse(e, x, y)}

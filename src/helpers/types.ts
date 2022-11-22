@@ -15,7 +15,6 @@ export enum Difficulty {
 
 export enum GameStatus {
 	Playing,
-	Pressing,
 	Lost,
 	Won,
 	Starting
