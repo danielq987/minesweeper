@@ -29,7 +29,6 @@
       "react-app/jest"
     ]
   },
-  "homepage": "~d3qu/minesweeper/",
   "browserslist": {
     "production": [
       ">0.2%",
